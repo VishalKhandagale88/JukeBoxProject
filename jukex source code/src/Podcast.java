@@ -4,6 +4,54 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Podcast {
+
+    private int podcastId;
+    private String podcastName;
+    private String podcastPath;
+
+    public int getPodcastId() {
+        return podcastId;
+    }
+
+    public void setPodcastId(int podcastId) {
+        this.podcastId = podcastId;
+    }
+
+    public String getPodcastName() {
+        return podcastName;
+    }
+
+    public void setPodcastName(String podcastName) {
+        this.podcastName = podcastName;
+    }
+
+    public String getPodcastPath() {
+        return podcastPath;
+    }
+
+    public void setPodcastPath(String podcastPath) {
+        this.podcastPath = podcastPath;
+    }
+
+    public Podcast(int podcastId, String podcastName, String podcastPath) {
+        this.podcastId = podcastId;
+        this.podcastName = podcastName;
+        this.podcastPath = podcastPath;
+    }
+
+    public Podcast(){
+
+    }
+
+    @Override
+    public String toString() {
+        return "Podcast{" +
+                "podcastId=" + podcastId +
+                ", podcastName='" + podcastName + '\'' +
+                ", podcastPath='" + podcastPath + '\'' +
+                '}';
+    }
+
     Connection connection = null;
     Statement statement = null;
     public void displayPodcast() throws SQLException, ClassNotFoundException {

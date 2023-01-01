@@ -6,6 +6,97 @@ import java.sql.Statement;
 
 public class Songs {
 
+    private int songId;
+    private String  durationOFSong;
+    private String SongName;
+    private String SongPath;
+    private String songGenre;
+    private String ArtistName;
+    private String Album;
+
+    public int getSongId() {
+        return songId;
+    }
+
+    public void setSongId(int songId) {
+        this.songId = songId;
+    }
+
+    public String getDurationOFSong() {
+        return durationOFSong;
+    }
+
+    public void setDurationOFSong(String durationOFSong) {
+        this.durationOFSong = durationOFSong;
+    }
+
+    public String getSongName() {
+        return SongName;
+    }
+
+    public void setSongName(String songName) {
+        SongName = songName;
+    }
+
+    public String getSongPath() {
+        return SongPath;
+    }
+
+    public void setSongPath(String songPath) {
+        SongPath = songPath;
+    }
+
+    public String getSongGenre() {
+        return songGenre;
+    }
+
+    public void setSongGenre(String songGenre) {
+        this.songGenre = songGenre;
+    }
+
+    public String getArtistName() {
+        return ArtistName;
+    }
+
+    public void setArtistName(String artistName) {
+        ArtistName = artistName;
+    }
+
+    public String getAlbum() {
+        return Album;
+    }
+
+    public void setAlbum(String album) {
+        Album = album;
+    }
+
+    public Songs(int songId, String durationOFSong, String songName, String songPath, String songGenre, String artistName, String album) {
+        this.songId = songId;
+        this.durationOFSong = durationOFSong;
+        SongName = songName;
+        SongPath = songPath;
+        this.songGenre = songGenre;
+        ArtistName = artistName;
+        Album = album;
+    }
+
+    public Songs(){
+
+    }
+
+    @Override
+    public String toString() {
+        return "Songs{" +
+                "songId=" + songId +
+                ", durationOFSong='" + durationOFSong + '\'' +
+                ", SongName='" + SongName + '\'' +
+                ", SongPath='" + SongPath + '\'' +
+                ", songGenre='" + songGenre + '\'' +
+                ", ArtistName='" + ArtistName + '\'' +
+                ", Album='" + Album + '\'' +
+                '}';
+    }
+
     Statement statement = null;
     Connection connection=null;
 
