@@ -74,46 +74,39 @@ public class User {
         Scanner scd = new Scanner(System.in);
         int choise = scd.nextInt();
 
-        while (choise!=0){
-            if (choise==1){
+
+        while (choise != 0) {
+            if (choise == 1) {
                 songs.displaySongs();
-            } else if (choise==2) {
+            } else if (choise == 2) {
                 songs.displyaArtist();
-            } else if (choise==3) {
+            } else if (choise == 3) {
                 songs.displaySongNames();
-            } else if (choise==4) {
+            } else if (choise == 4) {
                 songs.showAlbumName();
-            } else if (choise==5) {
+            } else if (choise == 5) {
                 songs.showAllGenre();
-            }else if (choise==7){
+            } else if (choise == 7) {
                 podcast.displayPodcast();
                 System.out.println("Check respective episodes");
                 System.out.println("Enter the episode number");
-                int  podcastid= scd.nextInt();
-                if(podcastid>0 && podcastid<4){
+                int podcastid = scd.nextInt();
+                if (podcastid > 0 && podcastid < 4) {
                     podcast.displayPodcastEpisode(podcastid);
-                }
-                else{
+                } else {
                     System.out.println("Invalid input ---");
                     System.out.println("Please enter the serial number in displayed range");
+                    int reselectpodcastepisode = scd.nextInt();
+                    podcast.displayPodcastEpisode(reselectpodcastepisode);
                 }
-
             }
-            System.out.println("Enter you choice");
+            System.out.println("Enter your choice :");
             System.out.println("1.show all songs 2.show by artist 3.show by song name  4.show by album name   5.show all genre 6.show playlist  7.show podcast 0.exit");
-            choise = scd.nextInt();
-            if(choise<0 || choise>7){
-                System.out.println("Not valid choice");
-                System.out.println("Would you like to select again!"+"yes/no");
-                char select = scd.next().charAt(0);
-                if (select=='y'){
-                    System.out.println("Enter you choice");
-                    System.out.println("1.show all songs 2.show by artist 3.show by song name  4.show by album name   5.show all genre 6.show playlist  7.show podcast 0.exit");
-                    choise = scd.nextInt();
-                }
-            }
+            choise= scd.nextInt();
+
         }
 
     }
+
 
  }
