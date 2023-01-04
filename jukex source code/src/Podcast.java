@@ -1,11 +1,16 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Podcast {
 
-    private int podcastId;
+    private static int podcastId;
     private String podcastName;
     private String podcastPath;
 
@@ -54,7 +59,11 @@ public class Podcast {
 
     Connection connection = null;
     Statement statement = null;
-    public void displayPodcast() throws SQLException, ClassNotFoundException {
+
+    Songs songs = new Songs();
+
+    public void displayPodcast() throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+        System.out.println("display podcast method called");
         connection = DataBaseConnection.getConnection();
         statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("select * from podcast;");
@@ -66,20 +75,71 @@ public class Podcast {
             System.out.format("%5s %25s\n",resultSet.getInt(1),resultSet.getString(2));
         }
         System.out.println("--------------------------------");
+        ResultSet resultSet1 = statement.executeQuery("select count(podcastName) from podcast");
+        int count_of_podcasts = 0;
+
+        while (resultSet1.next()){
+            count_of_podcasts=resultSet1.getInt(1);
+        }
+        Scanner scp = new Scanner(System.in);
+
+        try {
+                Podcast podcast = new Podcast();
+                System.out.println("enter serial number of podcast");
+                int selected_episode_number = scp.nextInt();
+                if (selected_episode_number >= 0 && selected_episode_number <= count_of_podcasts) {
+                    podcast.displayPodcastEpisode(selected_episode_number);
+                    setPodcastId(selected_episode_number);
+                    System.out.println("select the above link to listen the podcast");
+                } else {
+                    while (selected_episode_number > count_of_podcasts + 1) {
+                        System.out.println("Invalid input");
+                        System.out.println("please enter valid serial number of podcast in given range");
+                        int reselected = scp.nextInt();
+                        if (reselected <= count_of_podcasts) {
+                            podcast.displayPodcastEpisode(reselected);
+                            break;
+                        }
+                    }
+                }
+        }
+        catch (InputMismatchException ime){
+            System.out.println(ime);
+        }
+
     }
 
-    public void displayPodcastEpisode(int podcastid) throws SQLException, ClassNotFoundException {
+    public void displayPodcastEpisode(int podcastid) throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
         connection = DataBaseConnection.getConnection();
         statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select durationofpodcastepisode,episodenumber,podcastepisodename from podcastEpisodes where podcastid="+podcastid);
+        ResultSet resultSet = statement.executeQuery("select PodcastEpisodeId,durationofpodcastepisode,episodenumber,podcastepisodename,PathOfEpisode from podcastEpisodes where podcastid="+podcastid);
         System.out.format("%30s","*********** Podcast Episodes  **********\n");
-        System.out.println("--------------------------------------------------------");
-        System.out.format("%12s %19s %22s","Duration","Episode Number","Episode name\n");
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.format("%10s %12s %19s %22s %30s","Podcast Episode Id","Duration","Episode Number","Episode name","Episode path\n");
+        System.out.println("---------------------------------------------------------------------------------------------------------");
         while (resultSet.next()){
-            System.out.format("%9s %14s %30s \n",resultSet.getString(1),resultSet.getFloat(2),resultSet.getString(3));
+            System.out.format("%10s %9s %14s %30s %45s\n",resultSet.getInt(1),resultSet.getString(2),resultSet.getFloat(3),resultSet.getString(4),resultSet.getString(5));
         }
-        System.out.println("--------------------------------------------------------");
+        System.out.println("-----------------------------------------------------------------------------------------------------------");
+        System.out.println("For checking podcast again enter 1 or 2 to add in play list 0  Return to main menu");
+        Scanner scpe = new Scanner(System.in);
+
+        try {
+            Byte chek_podcast = scpe.nextByte();
+            if (chek_podcast == 1) {
+                Podcast p = new Podcast();
+                p.displayPodcast();
+            } else if (chek_podcast==0){
+                System.out.println("Returning to main.....");
+            }else if (chek_podcast==2){
+                System.out.println("Add to play list");
+                Playlist playlist = new Playlist();
+                playlist.createPlaylistforPdcast();
+            }
+        }catch (InputMismatchException inputMismatchException){
+            System.out.println("Input mismatch");
+        }
+
     }
 
 }

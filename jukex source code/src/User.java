@@ -1,8 +1,12 @@
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class User {
@@ -18,8 +22,8 @@ public class User {
         this.userid = userid;
     }
 
-    public String getUsername() {
-        return username;
+    public  String getUsername() {
+        return this.username; // vishal
     }
 
     public void setUsername(String username) {
@@ -57,6 +61,8 @@ public class User {
     Podcast podcast = new Podcast();
     Statement statement = null;
     Connection connection = null;
+    Playlist playlist =new Playlist();
+    static String current_user ="";
 
     public void displayUsersDatabase() throws SQLException, ClassNotFoundException {
         connection=DataBaseConnection.getConnection();
@@ -68,89 +74,125 @@ public class User {
         }
     }
 
-    public void checkUser() throws SQLException, ClassNotFoundException {
+    public void checkUser() throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
         connection=DataBaseConnection.getConnection();
         statement = connection.createStatement();
         Scanner scc = new Scanner(System.in);
-
+        System.out.println(">>>>>>>> -- welcome to jukeX -- <<<<<<<<");
         System.out.println("Are you existing user : yes/no");
-        String existing = scc.next();
-        if (existing.contains("y") || existing.contains("Y")){// dont want to use OR statement
-            System.out.println("Enter user name : ");
-            String existing_username = scc.next();
-            String valid_password = "";
-            String valid_user="";
-            ResultSet resultSet1 = statement.executeQuery("select * from users where username='"+existing_username+"' ");
-            while (resultSet1.next()){
-                valid_user = resultSet1.getString(2);
-            }
-            if (existing_username.equals(valid_user)){
-
-                System.out.println("Enter the password : ");
-                String  password = scc.next();
-                ResultSet resultSet = statement.executeQuery("select * from users where username='"+existing_username+"' ");
-                while (resultSet.next()){
-                    valid_password = resultSet.getString(3);
-                    if (valid_password.equals(password) ){
-                        System.out.println("------------Welcome jukeX---------------");
-                        displayChoise();
+        try {
+             String  existing = scc.next();
+            if (existing.contains("y") || existing.contains("Y")){// dont want to use OR statement
+                System.out.println("Enter user name : ");
+                String existing_username = scc.next();
+                String valid_password = "";
+                ResultSet resultSet1 = statement.executeQuery("select * from users where username='"+existing_username+"' ");
+                while (resultSet1.next()){
+                    valid_password = resultSet1.getString(2);
+                }
+                current_user=existing;
+                System.out.println(current_user);
+                System.out.println(getUsername());
+                if (existing_username.equals(valid_password) ){
+                    System.out.println("Enter the password : ");
+                    String  password = scc.next();
+                    ResultSet resultSet = statement.executeQuery("select * from users where username='"+existing_username+"' ");
+                    while (resultSet.next()){
+                        valid_password = resultSet.getString(3);
+                        if (valid_password.equals(password) ){
+                            System.out.println(">>>>>>>> -- welcome to jukeX -- <<<<<<<<");
+                            displayChoise();
+                        }
+                        else {
+                            System.out.println("Incorrect password");
+                            System.out.println("Re-login");
+                            System.out.println("In development will take to the beginning to Enter user name");
+                        }
                     }
-                    else {System.out.println("Incorrect password");}
-                }
-            } else {
-                System.out.println("User not found with user name :  "+existing_username);
-            }
-        } else{createNewUser();}
-    }
-
-    private void createNewUser() throws SQLException, ClassNotFoundException {
-        connection=DataBaseConnection.getConnection();
-        statement = connection.createStatement();
-        System.out.println("Welcome to jukeX"+"\n"+"You are creating new account"+"\n"+"Enter user id to be created");
-        Scanner sccn = new Scanner(System.in);
-        String new_userName = sccn.next();
-        System.out.println("Enter password");
-        String new_userPassWord = sccn.next();
-        statement.executeUpdate("insert into users (username,passwords)  values ('"+new_userName+"','"+new_userPassWord+"')");
-        System.out.println("User account created"+"\n"+"enjoy listening only on jukeX");
-    }
-
-    public void displayChoise() throws SQLException, ClassNotFoundException {
-        System.out.println("Enter your choice :");
-        System.out.println("1.show all songs 2.show by artist 3.show by song name  4.show by album name   5.show all genre 6.show playlist  7.show podcast 0.exit");
-        Scanner scd = new Scanner(System.in);
-        int choise = scd.nextInt();
-
-
-        while (choise != 0) {
-            if (choise == 1) {
-                songs.displaySongs();
-            } else if (choise == 2) {
-                songs.displyaArtist();
-            } else if (choise == 3) {
-                songs.displaySongNames();
-            } else if (choise == 4) {
-                songs.showAlbumName();
-            } else if (choise == 5) {
-                songs.showAllGenre();
-            } else if (choise == 7) {
-                podcast.displayPodcast();
-                System.out.println("Check respective episodes");
-                System.out.println("Enter the episode number");
-                int podcastid = scd.nextInt();
-                if (podcastid > 0 && podcastid < 4) {
-                    podcast.displayPodcastEpisode(podcastid);
                 } else {
-                    System.out.println("Invalid input ---");
-                    System.out.println("Please enter the serial number in displayed range");
-                    int reselectpodcastepisode = scd.nextInt();
-                    podcast.displayPodcastEpisode(reselectpodcastepisode);
+                    System.out.println("User not found with user name :  "+existing_username);
+                    System.out.println("-* Create a new account with username *- "+existing_username);
+                    System.out.println("Are you willing to create new account : "+"Yes/No");
+                    char yes_no = scc.next().charAt(0);
+                    if (yes_no=='y'){
+                        createNewUser();
+                    }
+                    else if (yes_no=='n'){
+                        System.out.println("In development");
+                    }
+                    System.out.println();
                 }
-            }
-            System.out.println("Enter your choice :");
-            System.out.println("1.show all songs 2.show by artist 3.show by song name  4.show by album name   5.show all genre 6.show playlist  7.show podcast 0.exit");
-            choise= scd.nextInt();
+            } else if (existing.contains("n")){createNewUser();}
+        }catch (InputMismatchException inputMismatchException){
+            System.out.println("Input mismatch : Expected Integer type but Entered String type");
+            checkUser();
+        }
 
+    }
+
+    private void createNewUser() {
+        try{
+            connection=DataBaseConnection.getConnection();
+            statement = connection.createStatement();
+            System.out.println(">>>>>>>> -- welcome to jukeX -- <<<<<<<<"+"\n"+"-* You are creating new account *-"+"\n"+"Enter user name to create new account");
+
+            Scanner sccn = new Scanner(System.in);
+            String new_userName = sccn.next();
+            System.out.println("Enter password");
+            System.out.println("PassWord length must be greater than 6  and less than 12 characters");
+            String new_userPassWord = sccn.next();
+            if (new_userPassWord.length()>6 && new_userPassWord.length()<12){
+                    statement.executeUpdate("insert into users (username,passwords)  values ('" + new_userName + "','" + new_userPassWord + "')");
+                    System.out.println(" ~ User account created ~ " + "\n" + " -> enjoy listening only on jukeX <- \n");
+                    displayChoise();
+            }else{
+                System.out.println("PassWord length must be greater than 6  and less than 12 characters");
+            }
+
+        }catch (SQLException sqlException){
+            System.out.println(sqlException);
+        }catch (ClassNotFoundException classNotFoundException){
+            System.out.println(classNotFoundException);
+        }catch (UnsupportedAudioFileException unsupportedAudioFileException){
+            System.out.println(unsupportedAudioFileException);
+        }catch (LineUnavailableException lineUnavailableException){
+            System.out.println(lineUnavailableException);
+        }catch (IOException ioException){
+            System.out.println(ioException);
+        }
+    }
+
+    public void displayChoise() throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+        System.out.println("Enter your choice :");
+        System.out.println("    1.show all songs \n\t2.show by artist \n\t3.show by song name  \n\t4.show by album name   \n\t5.show all genre \n\t6.show playlist  \n\t7.show podcast  \n\t0.exit");
+        Scanner scd = new Scanner(System.in);
+        try {
+            int choise = scd.nextInt();
+            while (choise != 0 && choise<=8) {
+                if (choise == 1) {
+                    songs.displaySongs();
+                } else if (choise == 2) {
+                    songs.displyaArtist();
+                } else if (choise == 3) {
+                    songs.displaySongNames();
+                } else if (choise == 4) {
+                    songs.showAlbumName();
+                } else if (choise == 5) {
+                    songs.showAllGenre();
+//                String genre = scd.next();
+
+                }else if (choise == 7) {
+                    podcast.displayPodcast();
+                } else if (choise==6) {
+                    playlist.showPlaylist();
+                }
+                System.out.println("Enter your choice :");
+                System.out.println("1.show all songs \n2.show by artist \n3.show by song name  \n4.show by album name   \n5.show all genre \n6.show playlist  \n7.show podcast  \n0.exit");
+                choise= scd.nextInt();
+            }
+        }catch (InputMismatchException inputMismatchException){
+            System.out.println("Input mismatch : Expected Integer type but Entered String type");
+            displayChoise();
         }
 
     }

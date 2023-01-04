@@ -1,5 +1,5 @@
 public class PodcastEpisodes {
-    private int pocastEpisodeId;
+    private int podcastEpisodeId;
     private String DurationOfPodcastEpisode;
     private int podcastId;
     private float EpisodeNumber;
@@ -7,8 +7,8 @@ public class PodcastEpisodes {
 
     private String podcastepisodename;
 
-    public PodcastEpisodes(int pocastEpisodeId, String durationOfPodcastEpisode, int podcastId, float episodeNumber, String pathOfEpisode, String podcastepisodename) {
-        this.pocastEpisodeId = pocastEpisodeId;
+    public PodcastEpisodes(int podcastEpisodeId, String durationOfPodcastEpisode, int podcastId, float episodeNumber, String pathOfEpisode, String podcastepisodename) {
+        this.podcastEpisodeId = podcastEpisodeId;
         DurationOfPodcastEpisode = durationOfPodcastEpisode;
         this.podcastId = podcastId;
         EpisodeNumber = episodeNumber;
@@ -16,12 +16,12 @@ public class PodcastEpisodes {
         this.podcastepisodename = podcastepisodename;
     }
 
-    public int getPocastEpisodeId() {
-        return pocastEpisodeId;
+    public int getPodcastEpisodeId() {
+        return podcastEpisodeId;
     }
 
-    public void setPocastEpisodeId(int pocastEpisodeId) {
-        this.pocastEpisodeId = pocastEpisodeId;
+    public void setPodcastEpisodeId(int podcastEpisodeId) {
+        this.podcastEpisodeId = podcastEpisodeId;
     }
 
     public String getDurationOfPodcastEpisode() {
@@ -67,7 +67,7 @@ public class PodcastEpisodes {
     @Override
     public String toString() {
         return "PodcastEpisodes{" +
-                "pocastEpisodeId=" + pocastEpisodeId +
+                "pocastEpisodeId=" + podcastEpisodeId +
                 ", DurationOfPodcastEpisode='" + DurationOfPodcastEpisode + '\'' +
                 ", podcastId=" + podcastId +
                 ", EpisodeNumber=" + EpisodeNumber +

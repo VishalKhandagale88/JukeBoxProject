@@ -63,3 +63,22 @@ select songid,songGenre from songs;
 select * from songs;
 
 update songs set songname='Sweet Dreams' where songid= 2;
+/*
+"D:stack routeJAVA projectjukebox-projectsongs wav fileclassicalRaag.wav"
+D:\stack route\JAVA project\songs wav file\Indian cinema\Rasiya.wav
+*/
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\classical\\Raag.wav' where songid=1;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\classical\\SweetDreams.wav' where songid=2;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\Indian cinema\\ide_kada.wav' where songid=3;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\Indian cinema\\Rasiya.wav' where songid=4;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\Jazz\\jazzz.wav' where songid=5;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\Jazz\\nightlife.wav' where songid=6;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\pop\\AWaqt.wav'  where songid=7;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\pop\\ThisIsWhat.wav' where songid=8;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\rock\\Boy.wav' where songid=9;
+update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\rock\\HeatWave.wav' where songid=10;
+
+select * from songs;
+delete from Songs where songid in (12,13,14,15,15,16,17,18,19,20);
+
+select * from songs where songGenre='Indian cinema';
