@@ -81,7 +81,8 @@ public class Playlist {
 
     Connection connection=null;
     Statement statement = null;
-    String current_user = "";
+
+    int user_id = 0; // --> user id is here
 
     public void showPlaylist() {
 
@@ -90,7 +91,7 @@ public class Playlist {
 
             System.out.println("**************************************************");
             System.out.println("**************************************************");
-            System.out.println("----------- User name is "+User.usernameDuringTheRun);
+            System.out.println("----------- User name is "+User.usernameDuringTheRun+"-----------");
             System.out.println("**************************************************");
             System.out.println("**************************************************");
             System.out.println("1.check your playlist  2.To create your playlist    0.To Main Menu");
@@ -114,7 +115,7 @@ public class Playlist {
 //        HashSet<Songs> songsHashSet = new HashSet<>();
           List<Songs> songsList = new ArrayList<>();
 
-        int user_id = 0; // --> user id is here
+
         int songid_tolisten=0;
         try {
             connection=DataBaseConnection.getConnection();
@@ -130,7 +131,7 @@ public class Playlist {
             }
             int plid=0;
             Songs songs = new Songs();
-            setUserid(user_id);
+
             System.out.println(" Your playlist ");
             System.out.println("Add Songs or podcast into the playlist");
             System.out.println("1.To add songs 2.To add podcast 0.To exit");
@@ -181,24 +182,26 @@ public class Playlist {
     }
 
     public void createPlaylistforPdcast(){
-        System.out.println(getPlaylistName());
-        System.out.println(getUserid());
-        System.out.println(getPodcastId());
+
         try{
             connection=DataBaseConnection.getConnection();
             statement = connection.createStatement();
             Scanner sccpld =new Scanner(System.in);
+            ResultSet rs1 = statement.executeQuery("select * from users where username='"+User.usernameDuringTheRun+"' ");
+            while (rs1.next()){
+                user_id = rs1.getInt(1);
+            }
             System.out.println("Adding podcast to playlist");
             System.out.println("Enter playlist name");
-            System.out.println("-Select song from above list-");
+            String playlist_name_add_podcast = sccpld.next();
             System.out.println("To create the playlist  ");
             System.out.println("Enter the your playlist number");
             System.out.println("This will make sure you having different playlists if you want");
             int plid = sccpld.nextInt();
-            System.out.println("Enter the podcast episode number");
+            System.out.println("Enter the podcast episode id");
             int podcast_episode_number =  sccpld.nextInt();
-            int rs3 = statement.executeUpdate("insert into playlist(plid,playlistname,podcastEpisodeId,userid) values('"+plid+"','"+getPlaylistName()+"','"+podcast_episode_number+"','"+getUserid()+"') ");
-            System.out.println("Podcast updated in playlist with user name : "+current_user);
+            int rs3 = statement.executeUpdate("insert into playlist(plid,playlistname,podcastEpisodeId,userid) values('"+plid+"','"+playlist_name_add_podcast+"','"+podcast_episode_number+"','"+user_id+"') ");
+            System.out.println("Podcast updated in playlist to user name : "+User.usernameDuringTheRun);
         }catch (SQLException sqlException){
             System.out.println(sqlException);
         }catch (InputMismatchException inputMismatchException){
@@ -220,7 +223,7 @@ public class Playlist {
             }
             setUserid(userId_0);
 
-            String str = "select * from playlist where userid="+getUserid()+" order by plid";
+            String str = "select * from playlist where userid="+userId_0+" order by plid";
             ResultSet result = statement.executeQuery(str);
             System.out.format("%85s","---------------------------\n");
             System.out.format("%85s","****** Play List **********\n");
@@ -275,11 +278,9 @@ public class Playlist {
                     songsArrayList.add(new Songs(result1_0.getInt(1),result1_0.getString(2),result1_0.getString(3),result1_0.getString(4),result1_0.getString(5),result1_0.getString(6),result1_0.getString(7)));
                 }
                 Songs s = new Songs();
-                System.out.println("Enter song name to be played");
+                System.out.println("Enter song id to be played");
                 int song_number = scusp.nextInt();
                 s.playSong(songsArrayList,song_number);
-            }else{
-                System.out.println("Returning to main....");
             }
         }catch (SQLException sqlException){
             System.out.println(sqlException);

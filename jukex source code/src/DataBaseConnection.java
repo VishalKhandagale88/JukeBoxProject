@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class DataBaseConnection {
 
-    static Connection connection=null; // 1.if this is non static
+    static Connection connection=null;
     Statement statement=null;
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
         //Loading Drivers

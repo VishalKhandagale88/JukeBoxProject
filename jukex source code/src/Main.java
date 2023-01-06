@@ -14,14 +14,6 @@ public class Main {
             System.out.println(inputMismatchException);
         }
 
-
-//        Songs s = new Songs();
-//        s.playSong();
-//        s.showAllGenre();
-//        Playlist playlist = new Playlist();
-//        playlist.getThePlaylistOfCurrentUser();
     }
 
 }
-
-// note handle exception at invalid input

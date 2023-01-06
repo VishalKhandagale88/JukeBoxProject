@@ -1,5 +1,6 @@
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -63,7 +64,7 @@ public class Podcast {
     Songs songs = new Songs();
 
     public void displayPodcast() throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
-        System.out.println("display podcast method called");
+
         connection = DataBaseConnection.getConnection();
         statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("select * from podcast;");
@@ -87,10 +88,10 @@ public class Podcast {
                 Podcast podcast = new Podcast();
                 System.out.println("enter serial number of podcast");
                 int selected_episode_number = scp.nextInt();
-                if (selected_episode_number >= 0 && selected_episode_number <= count_of_podcasts) {
+                if (selected_episode_number >= 1 && selected_episode_number <= count_of_podcasts) {
                     podcast.displayPodcastEpisode(selected_episode_number);
                     setPodcastId(selected_episode_number);
-                    System.out.println("select the above link to listen the podcast");
+
                 } else {
                     while (selected_episode_number > count_of_podcasts + 1) {
                         System.out.println("Invalid input");
@@ -104,7 +105,9 @@ public class Podcast {
                 }
         }
         catch (InputMismatchException ime){
-            System.out.println(ime);
+            System.out.println("Input miss match : integer expected but String value entered\n");
+        }catch (FileNotFoundException fileNotFoundException){
+            System.out.println(fileNotFoundException);
         }
 
     }
@@ -114,14 +117,15 @@ public class Podcast {
         statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("select PodcastEpisodeId,durationofpodcastepisode,episodenumber,podcastepisodename,PathOfEpisode from podcastEpisodes where podcastid="+podcastid);
         System.out.format("%30s","*********** Podcast Episodes  **********\n");
-        System.out.println("----------------------------------------------------------------------------------------------------------");
-        System.out.format("%10s %12s %19s %22s %30s","Podcast Episode Id","Duration","Episode Number","Episode name","Episode path\n");
-        System.out.println("---------------------------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.format("%10s %12s %19s %20s %30s","Podcast Episode Id","Duration","Episode Number","Episode name","Episode path\n");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------");
         while (resultSet.next()){
-            System.out.format("%10s %9s %14s %30s %45s\n",resultSet.getInt(1),resultSet.getString(2),resultSet.getFloat(3),resultSet.getString(4),resultSet.getString(5));
+            System.out.format("%10s %20s %14s %26s %48s\n",resultSet.getInt(1),resultSet.getString(2),resultSet.getFloat(3),resultSet.getString(4),resultSet.getString(5));
         }
-        System.out.println("-----------------------------------------------------------------------------------------------------------");
-        System.out.println("For checking podcast again enter 1 or 2 to add in play list 0  Return to main menu");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("\n--------click on above link to listen the podcast-----------\n");
+        System.out.println("\nFor checking podcast again enter 1 or 2 to add in play list 0  Return to main menu");
         Scanner scpe = new Scanner(System.in);
 
         try {

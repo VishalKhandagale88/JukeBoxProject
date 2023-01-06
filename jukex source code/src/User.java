@@ -78,7 +78,7 @@ public class User {
             connection=DataBaseConnection.getConnection();
             statement = connection.createStatement();
             Scanner scc = new Scanner(System.in);
-            System.out.println(">>>>>>>> -- welcome to jukeBoX -- <<<<<<<<");
+            System.out.println("\n>>>>>>>> -- welcome to jukeBoX -- <<<<<<<<");
             System.out.println("Are you existing user : yes/no");
              String  existing = scc.next();
             if (existing.contains("y") || existing.contains("Y")){// dont want to use OR statement
@@ -137,21 +137,24 @@ public class User {
         try{
             connection=DataBaseConnection.getConnection();
             statement = connection.createStatement();
-            System.out.println(">>>>>>>> -- welcome to jukeX -- <<<<<<<<"+"\n"+"-* You are creating new account *-"+"\n"+"Enter user name to create new account");
+            System.out.println(">>>>>>>> -- welcome to jukeBox -- <<<<<<<<"+"\n"+"-* You are creating new account *-"+"\n");
+                Scanner sccn = new Scanner(System.in);
+                System.out.println("Enter user name to create new account");
+                String new_userName = sccn.next();
 
-            Scanner sccn = new Scanner(System.in);
-            String new_userName = sccn.next();
-            System.out.println("Enter password");
-            System.out.println("PassWord length must be greater than 6  and less than 12 characters");
-            String new_userPassWord = sccn.next();
-            if (new_userPassWord.length()>6 && new_userPassWord.length()<12){
+                System.out.println("\nEnter password");
+                System.out.println("PassWord length must be greater than 5  and less than 10 characters");
+                String new_userPassWord = sccn.next();
+                if (new_userPassWord.length() >5 && new_userPassWord.length() < 10) {
                     statement.executeUpdate("insert into users (username,passwords)  values ('" + new_userName + "','" + new_userPassWord + "')");
-                    System.out.println(" ~ User account created ~ " + "\n" + " -> enjoy listening only on jukeX <- \n");
-                usernameDuringTheRun=new_userName;
+                    System.out.println(" ~ User account created ~ " + "\n" + " -> enjoy listening only on jukeBox <- \n");
+                    usernameDuringTheRun = new_userName;
                     displayChoise();
-            }else{
-                System.out.println("PassWord length must be greater than 6  and less than 12 characters");
-            }
+                }else {
+                    System.out.println("\nTry to set password again with required length of password");
+                    System.out.println("Re-open the application");
+                }
+
 
         }catch (SQLException sqlException){
             System.out.println(sqlException);
