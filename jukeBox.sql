@@ -7,4 +7,6 @@ username varchar(50) not null,
 passwords varchar(10) not null
 );
 select * from users;
-
+select songid,songname from songs where songid=1;
+select * from users where username='vishal';
+desc users;

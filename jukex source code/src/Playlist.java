@@ -10,11 +10,11 @@ import java.util.*;
 
 public class Playlist {
     private int PlaylistId;
+    private int plid;
     private  String playlistName;
-    private  int userid;
-
     private int SongId;
-    private int PodcastId;
+    private int PodcastEpisodeId;
+    private  int userid;
 
     public int getPlaylistId() {
         return PlaylistId;
@@ -22,6 +22,14 @@ public class Playlist {
 
     public void setPlaylistId(int playlistId) {
         PlaylistId = playlistId;
+    }
+
+    public int getPlid() {
+        return plid;
+    }
+
+    public void setPlid(int plid) {
+        this.plid = plid;
     }
 
     public String getPlaylistName() {
@@ -32,15 +40,6 @@ public class Playlist {
         this.playlistName = playlistName;
     }
 
-    public int getUserid() {
-        return userid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-        System.out.println(this.userid);
-    }
-
     public int getSongId() {
         return SongId;
     }
@@ -49,33 +48,44 @@ public class Playlist {
         SongId = songId;
     }
 
-    public int getPodcastId() {
-        return PodcastId;
+    public int getPodcastEpisodeId() {
+        return PodcastEpisodeId;
     }
 
-    public void setPodcastId(int podcastId) {
-        PodcastId = podcastId;
+    public void setPodcastEpisodeId(int podcastEpisodeId) {
+        PodcastEpisodeId = podcastEpisodeId;
     }
 
-    public Playlist(int playlistId, String playlistName, int userid, int songId, int podcastId) {
-        PlaylistId = playlistId;
-        this.playlistName = playlistName;
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
         this.userid = userid;
+    }
+
+    public Playlist(int playlistId, int plid, String playlistName, int songId, int podcastEpisodeId, int userid) {
+        PlaylistId = playlistId;
+        this.plid = plid;
+        this.playlistName = playlistName;
         SongId = songId;
-        PodcastId = podcastId;
+        PodcastEpisodeId = podcastEpisodeId;
+        this.userid = userid;
     }
 
     public Playlist(){
 
     }
+
     @Override
     public String toString() {
         return "Playlist{" +
                 "PlaylistId=" + PlaylistId +
+                ", plid=" + plid +
                 ", playlistName='" + playlistName + '\'' +
-                ", userid=" + userid +
                 ", SongId=" + SongId +
-                ", PodcastId=" + PodcastId +
+                ", PodcastEpisodeId=" + PodcastEpisodeId +
+                ", userid=" + userid +
                 '}';
     }
 
@@ -83,6 +93,8 @@ public class Playlist {
     Statement statement = null;
 
     int user_id = 0; // --> user id is here
+
+
 
     public void showPlaylist() {
 
@@ -246,6 +258,7 @@ public class Playlist {
         }
     }
     public  void usersSpecificPlayList(){
+        ArrayList<Playlist> playlistArrayList = new ArrayList<>();
         ArrayList<Songs> songsArrayList = new ArrayList<>();
         Scanner scusp = new Scanner(System.in);
         try{
@@ -255,7 +268,7 @@ public class Playlist {
             ResultSet rs1 = statement.executeQuery("select * from users where username='"+User.usernameDuringTheRun+"' ");
             Scanner scsp = new Scanner(System.in);
             int i=0;
-            ResultSet resultSet0 = statement.executeQuery("select count(distinct(plid)) from playlist where userid="+getUserid() +"  group by plid");
+            ResultSet resultSet0 = statement.executeQuery("select count(distinct(plid)) from playlist where userid="+getUserid()+"  group by plid");
             while (resultSet0.next()){
                 resultSet0.getInt(1);
                 i++;
@@ -265,22 +278,61 @@ public class Playlist {
                 System.out.println("which playlist you want to select ");
                 // select count(distinct(plid)) from playlist where userid=1 group by plid;
                 Byte selected_playlist = scsp.nextByte();
-                ResultSet resultSet = statement.executeQuery("select * from playlist where plid="+selected_playlist+" and userid="+getUserid());
-                System.out.println("--------------------------------------------------------------------------------------------------");
-                System.out.format("%-10s %15s %23s %35s ","Playlist","playlistName","SongId","PodcastEpisodeId\n");
-                System.out.println("--------------------------------------------------------------------------------------------------");
-                while (resultSet.next()){
-                    System.out.format("%-10s %10s %30s %32s \n",resultSet.getInt(2),resultSet.getString(3),resultSet.getInt(4),resultSet.getInt(5));
+                if (selected_playlist>0 && selected_playlist<=i){
+                    ResultSet resultSet = statement.executeQuery("select * from playlist where plid="+selected_playlist+" and userid="+getUserid());
+                    System.out.println("--------------------------------------------------------------------------------------------------");
+                    System.out.format("%-10s %15s %23s %35s ","Playlist","playlistName","SongId","PodcastEpisodeId\n");
+                    System.out.println("--------------------------------------------------------------------------------------------------");
+
+                    while (resultSet.next()){
+                        System.out.format("%-10s %10s %30s %32s \n",resultSet.getInt(2),resultSet.getString(3),resultSet.getInt(4),resultSet.getInt(5));
+                    }
+                    System.out.println("--------------------------------------------------------------------------------------------------\n");
+                    ResultSet resultSet1 = statement.executeQuery("select * from playlist where plid="+selected_playlist+" and userid="+getUserid());
+                    while (resultSet1.next()){
+                        playlistArrayList.add(new Playlist(resultSet1.getInt(1),resultSet1.getInt(2),resultSet1.getString(3),resultSet1.getInt(4),resultSet1.getInt(5),resultSet1.getInt(6)));
+                    }
+                    ResultSet resultSet2 = statement.executeQuery("select * from songs ");
+                    while (resultSet2.next()){
+                        songsArrayList.add(new Songs(resultSet2.getInt(1),resultSet2.getString(2),resultSet2.getString(3),resultSet2.getString(4),resultSet2.getString(5),resultSet2.getString(6),resultSet2.getString(7)));
+                    }
+                    ArrayList<Integer> songIdArrayList = new ArrayList<>();
+                    ListIterator<Playlist> playlistListIterator = playlistArrayList.listIterator();
+                    while (playlistListIterator.hasNext()){
+                        Playlist playlist = (Playlist) playlistListIterator.next();
+                        songIdArrayList.add(playlist.getSongId());
+                    }
+
+                    Songs s = new Songs();
+
+
+                    System.out.println(songIdArrayList);
+
+                    for (Integer iter : songIdArrayList) {
+                        System.out.println("Any key to continue playing -or-  'q' to quit");
+                        char ch = scusp.next().charAt(0);
+                        if (ch == 'q') {
+                            break;
+                        } else {
+                            System.out.println("Enter next song id to be played");
+                            int song_number = scusp.nextInt();
+                            if (iter >= 1) {
+                                if (songIdArrayList.contains(song_number)) {
+                                    s.playSong(songsArrayList, song_number);
+                                } else {
+                                    System.out.println("Song does not exists in your playlist\n");
+                                }
+                            } else {
+                                System.out.println("Entered input as zero");
+                            }
+                        }
+                    }
+
+
+                } else if (selected_playlist>i) {
+                    System.out.println("there is no playlist number "+selected_playlist+" in your playlist");
                 }
-                System.out.println("--------------------------------------------------------------------------------------------------\n");
-                ResultSet result1_0 = statement.executeQuery("select * from songs");
-                while (result1_0.next()){
-                    songsArrayList.add(new Songs(result1_0.getInt(1),result1_0.getString(2),result1_0.getString(3),result1_0.getString(4),result1_0.getString(5),result1_0.getString(6),result1_0.getString(7)));
-                }
-                Songs s = new Songs();
-                System.out.println("Enter song id to be played");
-                int song_number = scusp.nextInt();
-                s.playSong(songsArrayList,song_number);
+
             }
         }catch (SQLException sqlException){
             System.out.println(sqlException);

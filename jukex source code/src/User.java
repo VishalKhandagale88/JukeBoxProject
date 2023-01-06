@@ -145,7 +145,7 @@ public class User {
                 System.out.println("\nEnter password");
                 System.out.println("PassWord length must be greater than 5  and less than 10 characters");
                 String new_userPassWord = sccn.next();
-                if (new_userPassWord.length() >5 && new_userPassWord.length() < 10) {
+                if (new_userPassWord.length() >5 && new_userPassWord.length() <=18) {
                     statement.executeUpdate("insert into users (username,passwords)  values ('" + new_userName + "','" + new_userPassWord + "')");
                     System.out.println(" ~ User account created ~ " + "\n" + " -> enjoy listening only on jukeBox <- \n");
                     usernameDuringTheRun = new_userName;

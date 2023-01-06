@@ -37,11 +37,12 @@ PathOfEpisode varchar(400) not null
 select * from podcastEpisodes;
 
 create table playlist(
-PlaylistId int not null primary key not null,
-playlistName varchar(20) not null unique,
-userid int references users(userid),
+PlaylistId int not null auto_increment primary key ,
+Plid int not null ,
+playlistName varchar(50) not null,
 SongId int references songs(SongId),
-PodcastId int references podcast(podcastId)
+PodcastEpisodeId int references podcastEpisode(podcastEpisodeId),
+userid int references users(userid)
 );
 
 select * from playlist;

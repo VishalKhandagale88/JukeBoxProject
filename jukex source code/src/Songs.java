@@ -16,6 +16,7 @@ public class Songs {
     private String songGenre;
     private String ArtistName;
     private String Album;
+    private int plid;
 
     public int getSongId() {
         return songId;
@@ -76,15 +77,20 @@ public class Songs {
     public Songs(int songId, String durationOFSong, String songName, String songPath, String songGenre, String artistName, String album) {
         this.songId = songId;
         this.durationOFSong = durationOFSong;
-        SongName = songName;
+        this.SongName = songName;
         SongPath = songPath;
         this.songGenre = songGenre;
         ArtistName = artistName;
         Album = album;
     }
 
-    public Songs(){
 
+    Songs(int songId,String songPath){
+        this.songId=songId;
+        SongPath=songPath;
+    }
+
+    public Songs(){
     }
     private int userid_in_songs;
     public Songs(String songPath,int userid_in_songs,int songId){
@@ -110,7 +116,7 @@ public class Songs {
     Connection connection=null;
 
 
-    public void  displaySongs() throws SQLException, ClassNotFoundException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+    public void  displaySongs()  {
         // this method will display ant db other than user database
         try {
             List<Songs> songsdispaly = new ArrayList<>();
@@ -125,32 +131,38 @@ public class Songs {
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.format("%-10s %15s %23s %35s %30s %30s","serial no","Duration","Song name","Genre","Artist","Album\n");
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            int i =0;
             while (result.next()){
                 System.out.format("%-10s %10s %30s %32s %30s %35s \n",result.getInt(1),result.getString(2),result.getString(3),result.getString(5),result.getString(6),result.getString(7));
                 songsdispaly.add(new Songs(result.getInt(1),result.getString(2),result.getString(3),result.getString(4),result.getString(5),result.getString(6),result.getString(7)));
+                i++;
             }
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
             System.out.println("- Do u want to listen songs -");
             System.out.println("y->for yes , n-> for no");
             Scanner scda = new Scanner(System.in);
             String listen_on_or_not = scda.next();
-            if(listen_on_or_not.contains("y")){
+            if(listen_on_or_not.contains("y")) {
                 System.out.println("select song number to play");
                 Scanner scds = new Scanner(System.in);
                 int song_selected = scds.nextInt();
-                playSong(songsdispaly,song_selected);
+                if (song_selected>0 && song_selected <= i){
+                    playSong(songsdispaly, song_selected);
                 System.out.println("Would you like to listen other songs!");
                 System.out.println("n -> for No");
                 char re_listen = scda.next().charAt(0);
-                while(re_listen!='n'){
+                while (re_listen != 'n') {
                     System.out.println("Enter song number : ");
                     int song_number_reselected = scda.nextInt();
-                    playSong(songsdispaly,song_number_reselected);
+                    playSong(songsdispaly, song_number_reselected);
                     System.out.println("Enter q to return to main display or any key listen again");
-                    re_listen=scda.next().charAt(0);
-                    if (re_listen=='q'){
+                    re_listen = scda.next().charAt(0);
+                    if (re_listen == 'q') {
                         break;
                     }
+                }
+            }else {
+                    System.out.println("input Out of range\n");
                 }
             } else if (listen_on_or_not.contains("n")){
 
@@ -232,7 +244,7 @@ public class Songs {
                     if (songspresent.contains(song_id_selected)){
                         playSong(songsdispaly, song_id_selected);
                     }else {
-                        System.out.println("Songs is not present\n");
+                        System.out.println("Songs is not present with given song id \n");
                     }
                 }
 
@@ -323,11 +335,11 @@ public class Songs {
                 }
 
             }if (valid_song_name==false){
-                System.out.println("--Invalid input-- ");
+                System.out.println("--Invalid input-- \n");
             }
 
         }catch (InputMismatchException inputMismatchException){
-            System.out.println(inputMismatchException);
+            System.out.println("Input Mismatch : Integer expected entered String");
         }catch (SQLException sqlException){
             System.out.println(sqlException);
         }catch (ClassNotFoundException classNotFoundException){
@@ -409,7 +421,7 @@ public class Songs {
                 System.out.println("--Invalid input-- \n");
             }
         }catch (InputMismatchException inputMismatchException){
-            System.out.println(inputMismatchException);
+            System.out.println("Input Mismatch : Integer expected entered String");
         }catch (SQLException sqlException){
             System.out.println(sqlException);
         }catch (ClassNotFoundException classNotFoundException){

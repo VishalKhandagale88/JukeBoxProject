@@ -78,7 +78,10 @@ update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs
 update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\rock\\Boy.wav' where songid=9;
 update songs set songpath='D:\\stack route\\JAVA project\\jukebox-project\\songs wav file\\rock\\HeatWave.wav' where songid=10;
 
-select * from songs;
+select * from songs where songid=1;
 delete from Songs where songid in (12,13,14,15,15,16,17,18,19,20);
-
+select * from songs;
+select* from songs where  album='classical music';
 select * from songs where songGenre='Indian cinema';
+desc songs;
+select * from songs where songid=1;
