@@ -184,7 +184,6 @@ public class Songs {
     public void  displyaArtist(){
 //        ArrayList<Songs> artists = new ArrayList<>();
         try{
-            List<Songs> songsdispaly = new ArrayList<>();
             connection = DataBaseConnection.getConnection();
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from Songs");
@@ -194,7 +193,6 @@ public class Songs {
             System.out.println("----------------------------");
             while (resultSet.next()){
                 System.out.format("%5s %20s\n",resultSet.getInt(1),resultSet.getString(6));
-                songsdispaly.add(new Songs(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getString(7)));
             }
             System.out.println("----------------------------");
             int proper_out=0;
@@ -215,25 +213,16 @@ public class Songs {
                     valid_artistname=true;
                 }
             }
-            ArrayList<Integer> songspresent = new ArrayList<>();
 
-            if (valid_artistname==true) {
 
-                Iterator<Songs> checkArtists = songsdispaly.listIterator();
-                while (checkArtists.hasNext()){
-                    Songs s =  checkArtists.next();
-                    if (s.getArtistName().contains(artist_name_selected)) {
-                        songspresent.add(s.getSongId());
-                        valid_artistname=true;
-                        //break;
-                    }else if (valid_artistname == false){
-                        valid_artistname=false;
-
-                    }
-                }
+            ArrayList<Songs> ArtistsArrayList = new ArrayList<>();
+            ResultSet resultSet1 = statement.executeQuery("select * from songs where artistname like '"+ artist_name_selected +"%' ");
+            while (resultSet1.next()){
+                ArtistsArrayList.add(new Songs(resultSet1.getInt(1),resultSet1.getString(2),resultSet1.getString(3),resultSet1.getString(4),resultSet1.getString(5),resultSet1.getString(6),resultSet1.getString(7)));
             }
 
-            if (valid_artistname==true && songspresent.size()>0){
+
+            if (valid_artistname==true && ArtistsArrayList.size()>0){
                 ResultSet result2 = statement.executeQuery("select * from songs where artistname like '"+ artist_name_selected +"%' ");
                 System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
                 System.out.format("%-10s %15s %23s %35s %30s %30s", "serial no", "Duration", "Song name", "Genre", "Artist", "Album\n");
@@ -246,23 +235,23 @@ public class Songs {
                 int song_id_selected = scda.nextInt();
                 int count=0;
                 int displaySongNames_song_not_present=0;
-                    for (Integer i : songspresent) {
-                        if (count >= 0 && count <= 1) {
-                            if (songspresent.contains(song_id_selected)) {
-                                playSong(songsdispaly, song_id_selected);
-                                count++;
-                            } else {
-                                displaySongNames_song_not_present = 1;
+                    for (Songs i : ArtistsArrayList) {
+                        if ( count <1) {
+                            if (i.getSongId()==song_id_selected) {
+                                ++count;
+                                playSong(ArtistsArrayList, song_id_selected);
                             }
                         }
-                    }
+                    }if (count==0){
+                    displaySongNames_song_not_present = 1;
+                }
 
                 if (displaySongNames_song_not_present==1) {
                     System.out.println("\nSong is not present in the list\n");
                 }
             }else if (valid_artistname==false){
                 System.out.println("--Invalid input-- \n");
-            } else if (songspresent.size()==0) {
+            } else if (ArtistsArrayList.size()==0) {
                 System.out.println("There is no Artist found with artist name -> "+artist_name_selected+" <-\n");
             }
         }catch (InputMismatchException inputMismatchException){
@@ -280,7 +269,7 @@ public class Songs {
 //        ArrayList<Songs> songnames =  new ArrayList<>();
         try {
             Scanner scdsn = new Scanner(System.in);
-            List<Songs> songsdispaly = new ArrayList<>();
+
             connection = DataBaseConnection.getConnection();
             statement = connection.createStatement();
             ResultSet result = statement.executeQuery("select * from songs");
@@ -290,7 +279,6 @@ public class Songs {
             System.out.println("-----------------------------------");
             while (result.next()){
                 System.out.format("%5s %27s\n",result.getInt(1),result.getString(3));
-                songsdispaly.add(new Songs(result.getInt(1),result.getString(2),result.getString(3),result.getString(4),result.getString(5),result.getString(6),result.getString(7)));
             }
             System.out.println("-----------------------------------");
             int proper_out=0;
@@ -310,23 +298,15 @@ public class Songs {
                     valid_song_name=true;
                 }
             }
-            ArrayList<Integer> songspresentname = new ArrayList<>();
-            if (valid_song_name==true) {
-                Iterator<Songs> checkArtists = songsdispaly.listIterator();
-                while (checkArtists.hasNext()){
-                    Songs s =  checkArtists.next();
-                    if (s.getSongName().contains(song_name_selected)) {
-                        valid_song_name=true;
-                        songspresentname.add(s.getSongId());
-
-                    }else if(valid_song_name==false){
-                        valid_song_name=false;
-
-
-                    }
-                }
+            ArrayList<Songs> SongsArrayList = new ArrayList<>();
+            ResultSet result2_0 = statement.executeQuery("select * from songs where songname like '"+song_name_selected+"%' ");
+            while (result2_0.next()){
+                SongsArrayList.add(new Songs(result2_0.getInt(1),result2_0.getString(2),result2_0.getString(3),result2_0.getString(4),result2_0.getString(5),result2_0.getString(6),result2_0.getString(7)));
             }
-            if (valid_song_name==true && songspresentname.size()>0) {
+
+
+
+            if (valid_song_name==true && SongsArrayList.size()>0) {
                 ResultSet result2 = statement.executeQuery("select * from songs where songname like '"+song_name_selected+"%' ");
                 System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
                 System.out.format("%-10s %15s %23s %35s %30s %30s","serial no","Duration","Song name","Genre","Artist","Album\n");
@@ -339,15 +319,16 @@ public class Songs {
                 int song_id_selected = scdsn.nextInt();
                 int count=0;
                 int SongName_song_not_present =0;
-                for (Integer i : songspresentname){
-                    if (count>=0 && count<=1) {
-                        if (songspresentname.contains(song_id_selected)) {
-                            playSong(songsdispaly, song_id_selected);
-                            count++;
-                        } else {
-                            SongName_song_not_present=1;
+                for (Songs i : SongsArrayList){
+                    if (count<1) {
+                        if (i.getSongId()==song_id_selected) {
+                            playSong(SongsArrayList, song_id_selected);
+                            ++count;
                         }
                     }
+                }
+                if (count==0){
+                    SongName_song_not_present=1;
                 }
                 if (SongName_song_not_present==1){
                     System.out.println("\n Song is not found in the list\n");
@@ -355,7 +336,7 @@ public class Songs {
 
             }else if (valid_song_name==false){
                 System.out.println("--Invalid input-- \n");
-            } else if (songspresentname.size()==0) {
+            } else if (SongsArrayList.size()==0) {
                 System.out.println("Song is not found with song name ->"+song_name_selected+"<-\n");
             }
 
@@ -425,15 +406,14 @@ public class Songs {
                 int count =0;
                 int album_song_not_present=0;
                 for (Songs i : songsdispaly_in_album){
-                    if (count>=0 && count<=1){
+                    if (count < 1){
                         if (i.getSongId()==album_song_selected){
+                            ++count;
                             playSong(songsdispaly_in_album, album_song_selected);
-                            count++;
                         }
-                    }else {
-                        System.out.println("In side the else if");
-                        album_song_not_present=1;
                     }
+                } if (count==0){
+                    album_song_not_present=1;
                 }
                 if (album_song_not_present==1){
                     System.out.println("\nSong is not found in the list\n");
@@ -524,12 +504,14 @@ public class Songs {
                 for (Songs i : showallgenre_ArrayList){
                     if (count>=0 && count<=1){
                         if (i.getSongId()==gener_song_selected){
+                            ++count;
                             playSong(showallgenre_ArrayList, gener_song_selected);
-                            count++;
-                        }else {
-                            genere_song_not_found = 1;
+
                         }
                     }
+                }
+                if (count==0){
+                    genere_song_not_found=1;
                 }
                 if (genere_song_not_found==1){
                     System.out.println("\nSong is not found in the list\n");
@@ -573,7 +555,7 @@ public class Songs {
             long micro=0l;
 
             while (i!=0){
-                System.out.println("Enter 1.play 2.pause 3.Reset 4. Resume 0 to stop");
+                System.out.println("Enter 1.play 2.pause 3.Reset 4. Resume 0.Main menu");
                 i= scp.nextInt();
                 switch (i){
                     case 1:{
